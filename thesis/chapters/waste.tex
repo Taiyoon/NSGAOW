@@ -1,0 +1,376 @@
+% \chapter{一级标题}\label{chapter:example}
+
+\section{二级标题}
+
+\subsection{三级标题}
+
+\subsubsection{四级标题}
+
+\paragraph{五级标题}
+
+\subparagraph{写什么东西会套六级标题}
+
+上标引用\cite{张军2022基于数据驱动的微电网双层鲁棒优化调度}
+
+正文引用\parencite{张军2022基于数据驱动的微电网双层鲁棒优化调度}
+
+公式引用\eqref{eq:example}
+
+% 章节引用第\ref{chapter:example}章
+\begin{align}
+    \begin{autobreak}
+        \sum_{\substack{1 \leq k \leq K\\1 \leq l \leq L}}
+        \frac{\mathbf{1}_{v<V_k} \sqrt{{Q}_{k,l,1} {z}_{k,l,1}} \sqrt{{Q}_{k,l,2} {z}_{k,l,2}} {D}_{k,j,v}^{2} {E}_{k}}{{D}_{k,j,v + 1}^{2}}
+        + \frac{\mathbf{1}_{v<V_k} \sqrt{{Q}_{k,l,1} {z}_{k,l,1}} {D}_{k,j,v} {E}_{k} {Q}_{k,l,1}}{{D}_{k,j,v + 1}}
+        + \frac{\mathbf{1}_{v<V_k} \sqrt{{Q}_{k,l,1} {z}_{k,l,1}} {D}_{k,j,v} {E}_{k} {Q}_{k,l,2}}{{D}_{k,j,v + 1}}
+        + \frac{\mathbf{1}_{v<V_k} \sqrt{{Q}_{k,l,1} {z}_{k,l,1}} {D}_{k,j,v} {E}_{k} \sum_{j=1}^{J} {D}_{k,j,1} {x}_{k,j,l}}{{D}_{k,j,v + 1}}
+        + \frac{\mathbf{1}_{v<V_k} {D}_{k,j,v}^{2} {E}_{k} {Q}_{k,l,1} {z}_{k,l,1}}{2 {D}_{k,j,v + 1}^{2}}
+        + \frac{\sqrt{{Q}_{k,l,2} {z}_{k,l,2}} {D}_{k,j,v} {E}_{k} {Q}_{k,l,1}}{{D}_{k,j,v + 1}}
+        + \frac{\sqrt{{Q}_{k,l,2} {z}_{k,l,2}} {D}_{k,j,v} {E}_{k} {Q}_{k,l,2}}{{D}_{k,j,v + 1}}
+        + \frac{\sqrt{{Q}_{k,l,2} {z}_{k,l,2}} {D}_{k,j,v} {E}_{k} \sum_{j=1}^{J} {D}_{k,j,1} {x}_{k,j,l}}{{D}_{k,j,v + 1}}
+        + {E}_{k} {Q}_{k,l,1} {Q}_{k,l,2} - 2 {E}_{k} {Q}_{k,l,1} {z}_{k,l,1}
+        + {E}_{k} {Q}_{k,l,1} \sum_{j=1}^{J} {D}_{k,j,1} {x}_{k,j,l}
+        + {E}_{k} {Q}_{k,l,1} \sum_{j=1}^{J} {D}_{k,j} {x}_{k,j,l}
+        + \frac{{E}_{k} {Q}_{k,l,2}^{2}}{2}
+        - {E}_{k} {Q}_{k,l,2} {z}_{k,l,2}
+        + {E}_{k} {Q}_{k,l,2} \sum_{j=1}^{J} {D}_{k,j,1} {x}_{k,j,l}
+        + \frac{{E}_{k} {z}_{k,l,2}^{2}}{2}
+        + \frac{{E}_{k} \left(\sum_{j=1}^{J} {D}_{k,j,1} {x}_{k,j,l}\right)^{2}}{2} - \frac{{E}_{k} \left(\sum_{j=1}^{J} {D}_{k,j} {x}_{k,j,l}\right)^{2}}{2}
+        + \frac{{Q}_{k,l,1}^{2}}{2}
+        + {Q}_{k,l,1} {z}_{k,l,1}
+        - {Q}_{k,l,1} \sum_{j=1}^{J} {D}_{k,j} {x}_{k,j,l}
+        + \frac{{z}_{k,l,1}^{2}}{2}
+        + \frac{\left(\sum_{j=1}^{J} {D}_{k,j} {x}_{k,j,l}\right)^{2}}{2}
+        + \frac{{D}_{k,j,v}^{2} {E}_{k} {Q}_{k,l,2} {z}_{k,l,2}}{2 {D}_{k,j,v + 1}^{2}}
+    \end{autobreak}
+    \label{eq:example}
+\end{align}
+
+引入可以在其他三部分确定后再写
+本章提出混合云中隐私任务的在线调度模型，分析普通和半隐私三种任务类型的特征及其处理方式。
+通过对协作隐私任务的深入研究，我们将提出有效的调度策略，以优化资源使用和保证数据安全。
+这一模型的建立，不仅为隐私任务的高效调度提供了理论基础，也为实际应用中解决隐私保护与计算效率之间的矛盾提供了切实可行的方案。
+
+本章将混合云中隐私任务调度划分为普通和半隐私三种类型，并对隐私任务在线调度框架进行建模。
+将同时利用公有云和私有云资源的任务定义为协作隐私任务，分析协作隐私任务常见处理方式，并进行建模。
+
+本章将混合云中隐私任务的调度划分为普通隐私任务和协作隐私任务，并对隐私任务在线调度框架进行建模。我们将协作隐私任务定义为同时利用公有云和私有云资源的任务，分析其常见处理方式，并进行详细建模。
+
+为简化模型，本文假设交换中间结果的速度仅由虚拟机的上行带宽决定，因为云资源的下行带宽普遍大于上行带宽。
+
+对于虚拟机\(V_u\), 其属性包括: \[
+    u = \{C_u, L_u, D_u, P^c_u, P^d_u, S_u\}
+\]
+
+\(D_i\)表示虚拟机网络传播延迟, 单位是秒(s);
+\(P^d_i\)是虚拟机网络流量的价格, 单位是\$/Mbit.
+\(S_i\)是隐私标记，公有云的安全等级固定为
+0，其含义为隐私标记为低，无法处理隐私数据。私有虚拟机固定为
+1，其含义为隐私标记为高，可以处理隐私数据。
+
+观察协作隐私任务的执行过程，发现协作隐私任务任务有着并行度低，受网络状况影响大的特点。
+传统基于预计完成时间的DAG任务调度算法，在调度时容易因完成时间估计误差的累积而导致调度效果下降，从而不适合用于协作隐私任务的调度。
+
+协作隐私的队列长度定义为：
+
+\begin{equation}
+    Q_i^c(t) = \max \{0, Q_i^c(t-1) - \beta_i(t) \} + \alpha_i(t)
+\end{equation}
+其中，
+
+与独立隐私任务不同，协作隐私任务的队列长度不是任务的数据量，而是任务的请求数量，这是为了考虑在计算过程中交换中间结果时由于计算和通信需求增加的延迟所带来的额外时间消耗。
+根据式\eqref{eq:mqt}获得的协作隐私任务\(j\)在私有云\(A\)和公有云\(B\)中的平均排队时间\(t^{MQT}_A, t^{MQT}_B\)，协作隐私任务\(j\)的中间计算结果交换轮数\(k_j\)，我们可以得到协作隐私任务\(j\)的预期完成时间\(t^{PFT}_j\)：
+\begin{equation}
+    t^{PFT}_j =
+    \begin{cases}
+        t^{EXEC}_j                      & , N_A = N_B = 1         \\
+        k \cdot t^{MQT}_A + t^{EXEC}_j  & , N_A > 1 \land N_B = 1 \\
+        k \cdot t^{MQT}_B + t^{EXEC}_j  & , N_A = 1 \land N_B > 1 \\
+        k \cdot (t^{MQT}_A + t^{MQT}_B) & , N_A > 1 \land N_B > 1
+    \end{cases}
+    \label{eq:semi-eft}
+\end{equation}
+其中，当虚拟机\(A, B\)中只有1个协作隐私任务时，平均排队时间\(t^{MQT}\)为0，此时使用\(t^{EXEC}_j\)表示协作隐私任务在独占虚拟机资源时的完成时间，由协作隐私任务在公有云和私有云虚拟机中的数据量\(D_{jA}, D_{jB}\)和每比特计算周期数\(C_{jA}, C_{jB}\)计算得到：
+\[
+    t^{EXEC}_j = \frac{D_{jA}}{T_A}\\
+    +\frac{D_{jB}}{T_B}\\
+    +\frac{C_{jA}\cdot D_{jA}}{K_A}\\
+    +\frac{C_{jB}\cdot D_{jB}}{K_B}
+\]
+
+协作隐私任务的完成时间符合\(\Gamma(k, 1/t^{MQT}_A)\)的分布，因此协作隐私任务\(j\)在分配虚拟机\(\{A, B\}\)时满足截止时间\(t^{DDL}_j\)的概率\(P(t^{PFT}_j \le t^{DDL}_j | {A, B})\)：
+\begin{equation}
+    P(t^{PFT}_j \le t^{DDL}_j | {A, B}) =  \frac{x^{k-1} e^{-x/\theta}}{\theta^k \Gamma(k)}
+    \label{eq:semi-sat-probability}
+\end{equation}
+其中，\(k\) 是形状参数，\(\theta\) 是尺度参数，\(\Gamma(k)\)
+是Gamma函数。
+
+\[SAT(t) = \sum_{\tau=0}^{t}\frac{\sum_{j \in J} I(j)\cdot \text{SUBMIT}(j, \tau)}{\sum_{j \in J} \text{SUBMIT}(j, \tau)}\]
+
+完成时间\(FT(j)\)是指任务从提交至处理完毕所经过的时间，涉及决策变量$\mathbf{x}$和$\mathbf{z}(t)$表示为： \[
+    FT(j) = \frac{D_j}{\sum_i T_i\cdot x_{ij} \cdot z_i}\\
+    +\frac{C_j\cdot D_j}{\sum_i K_i\cdot x_{ij} \cdot z_i} + \text{WAIT}(j)
+\]
+完成时间包括三部分，分别是传输时间\({D_j}/{\sum_i T_i\cdot x_{ij}}\)，计算时间\({C_j\cdot D_j}/{\sum_i K_i\cdot x_{ij}}\)以及等待时间\(\text{WAIT}(j)\)。等待时间是指任务在处理之前，因需要等待计算与传输资源而产生的时间。这一时间包括任务在队列中排队等待被处理的时间，以及因半隐私任务等待中间结果的时间。
+
+的，这个近似函数逼近于原优化问题 \(P1\) 的目标函数，也就是：
+在每个时隙 \(t\)，目标函数被分解为成本变化量 \(\Delta \text{COST}(t)\) 和截止时间满足率变化量 \(\Delta \text{SAT}(t)\)，问题分解的
+
+\[
+    \text{COST}_{\text{vm}}(\lambda^{\text{pub}}(t), \mathbf{x}, \mathbf{y(t)}, \mathbf{z(t)}) + \Delta \text{COST}_{\text{remaining}}(L_{\text{normal}}(t), \mathbf{x}, \mathbf{y(t)}, \mathbf{z(t)})
+\]
+
+虚拟机租用成本 \(\text{COST}_{\text{vm}}\) 是通过到达任务的平均速率 $ \lambda^{\text{pub}}(t) $ 与混合云系统利用率 \(U_s(t, \mathbf{y(t)}, \mathbf{z(t)})\) 之比计算得到，并进一步乘以单位计算资源的平均成本 \(\text{cost}\)。其数学表达式为：
+
+\[
+    \text{COST}_{\text{vm}} = \frac{\lambda^{\text{pub}}(t)}{U_s(t, \mathbf{y(t)}, \mathbf{z(t)})} \cdot \text{cost}
+\]
+
+其中\(\lambda^{\text{pub}}(t)\)：表示时隙 \(t\) 内公有云任务的到达速率，使用指数加权移动平均法公式\eqref{eq:pub-arrival-ewa}计算；
+\(U_s(t, \mathbf{y(t)}, \mathbf{z(t)})\)：表示混合云系统在当前资源租用策略 \(\mathbf{y(t)}\) 和预留资源策略 \(\mathbf{z(t)}\) 下的系统利用率；
+\(\text{cost}\)：表示处理单位计算资源的平均成本。
+
+\begin{equation}
+    \lambda^{\text{pub}}(t) = (1 - \alpha) \lambda^{\text{pub}}(t-1) + \alpha \sum_{i=N}^{N+M} D_j \cdot J(t) \cdot \mathbf{x}_i
+    \label{eq:pub-arrival-ewa}
+\end{equation}
+其中，\(J(t)\)：在时隙 \(t\) 内到达的任务数量。\(\alpha\)：平滑因子，取值范围在 \(0 < \alpha < 1\)。较大的 \(\alpha\) 值意味着对最新数据的更大权重，较小的 \(\alpha\) 值则更加平滑历史数据。
+
+系统利用率 \(U_s(t)\) 表示在时隙 \(t\) 内，混合云系统中公有虚拟机的加权平均利用率，用来表示虚拟机空闲与忙碌的时间比例。该指标基于排队论模型，通过分析普通任务和半隐私任务的队列，也就是公式 \eqref{eq:util-normal} 和 \eqref{eq:util-semi} 计算得出。
+系统利用率可以表示为：
+
+\[
+    U_s(t) = \frac{\sum_{i=1}^{N+M} U_i(t) y_i \cdot K_i}{\sum_{i=1}^{N} K_i y_i}
+\]
+
+其中：\(U_i(t)\) 表示虚拟机 \(i\) 在时隙 \(t\) 内的利用率；\(K_i\) 表示虚拟机 \(i\) 的处理能力；\(N+M\) 为混合云中虚拟机的总数量。
+
+任务大小 \(D_j\) 由任务的数据量与计算量中较大的一个确定，定义为：
+
+\[
+    D_j = \max \left\{ D_j, \frac{D_j \cdot C_j \cdot T^{\text{avg}}}{K^{\text{avg}}} \right\}
+\]
+其中，\(D_j\)：任务 \(j\) 的数据量，表示任务所需处理的数据量。
+\(C_j\)：任务 \(j\) 的每比特数据所需的平均计算时钟周期，反映了处理每单位数据所需的计算资源。
+\(T^{\text{avg}}\)：混合云系统中的平均传输速度，表示数据在系统中传输的速率。
+\(K^{\text{avg}}\)：混合云的平均处理速度，表示系统在执行任务时的计算能力。
+
+成本变化量公式：
+\[
+    \Delta \text{COST}_{\text{remaining}}(t) = \text{COST}_{\text{remaining}}(t) - \text{COST}_{\text{remaining}}(t-1)
+\]
+
+截止时间满足率 \(\Delta \text{SAT}\)
+
+截止时间满足率可以表示为：
+\[
+    \text{SAT} = \text{SAT} + \text{SAT}_{\text{short}}
+\]
+长期目标 \(\text{SAT}\)：反映按照当前调度策略与任务到达率情况下，系统的整体截止时间满足率的期望。
+短期目标 \(\text{SAT}_{\text{short}} = \text{SAT}(t) - \text{SAT}(t-1)\)：关注每个时隙内任务的即时截止时间满足率，确保短期内任务按时完成。
+
+截止时间满足率的获取较为复杂，因为任务的等待时间$\text{WAIT}(j)$会随着虚拟机负载发生而发生变化，本文采用截止时间满足率的期望来表示当前时隙的
+
+$\mathbb{E} [SAT(t) | V(t), x_{ij}, y_i(t), z_i(t)]$ 表示在时隙 $t$ 中，给定虚拟机状态 $V(t)$ 以及决策变量 $x_{ij}$, $y_i(t)$, $z_i(t)$ 的情况下，截止时间满足率的期望值。该期望值可以通过计算普通任务与半隐私任务满足截止时间的概率来获得，即根据公式 \eqref{eq:normal-sat-probability} 和公式 \eqref{eq:semi-sat-probability}。具体而言，我们有：
+
+其中 \( P(t^{PFT}_j \le t^{DDL}_j | V(t), x_{ij}, y_i(t), z_i(t)) \) 由公式 \eqref{eq:normal-sat-probability} 和公式 \eqref{eq:semi-sat-probability}定义。表示在给定虚拟机状态和决策变量的条件下，任务 \( j \) 的完成时间 \( t^{PFT}_j \) 满足其截止时间 \( t^{DDL}_j \) 的概率。【对于已处理完毕的任务，其截止时间满足率不会发生变化，因此可以忽略】
+
+我们获得调度问题P2.1，租用决策：
+
+\begin{equation}
+    P3.1:
+    y_i(t) = \text{arg min} w_1 \Delta \text{COST}(t) + (1 - w_1) \Delta \text{SAT}(t)
+    \label{eq:opt-p2-cost}
+\end{equation}
+
+调度问题P2.2，任务分配决策：
+
+\begin{equation}
+    P2.2:
+    x_{ij} = \text{arg max} \Delta \text{SAT}(t)
+    \label{eq:opt-p2-offload}
+\end{equation}
+
+调度问题P2.3，预留资源决策【是优化虚拟机内部预留给任务的资源】
+
+\begin{equation}
+    P2.3:
+    z_{i} = \text{arg max} \Delta \text{SAT}(t)
+    \label{eq:opt-p2-reserve}
+\end{equation}
+
+通过对调度问题 P1 的分解为子问题 P2.1、P2.2 和 P2.3，我们可以分别优化每个时隙的决策变量，从而获得在线调度问题的解。
+
+调度算法包含三部分：虚拟机租用决策，任务分配以及执行顺序确定，分别对应优化子问题 P2.1、P2.2 和 P2.3。
+
+\subsection{虚拟机租用决策}
+
+为了进行虚拟机租用决策，需要综合考虑任务的到达率、到达任务的属性以及混合云的状态。并优化当前时隙 $t$ 需要租用的虚拟机数量 $\mathbf{y}(t)$ 这一决策变量，以实现成本与截止时间满足率之间的平衡。
+
+通过求解上述优化模型，我们可以得到在当前时隙 $t$ 需要租用的虚拟机数量 $\mathbf{y}(t)$，确保在满足任务需求的同时，平衡成本与截止时间。
+
+这种决策方法可以有效地适应动态变化的任务负载和云资源情况，提高系统的灵活性和效率。
+
+获得成本的下界为0，此时所有任务都在私有云中处理。
+成本的上界的期望为$A^n(t) / K$，此时所有非敏感数据都在公有云中处理，
+但由于截止时间以及数据交换的延迟，成本可能会大于$A^n(t) / K$。
+
+目标函数可以表示为：
+
+\begin{equation}
+    \min_{\mathbf{y}(t)} \quad w_1 \Delta \text{COST}(\mathbf{y})
+    - (1 - w_1) 1/\Delta \text{SAT}(\mathbf{y})
+\end{equation}
+其中，$\mathbf{y}(t)$ 表示在时隙 $t$ 租用的虚拟机数量向量。
+\( S(t) \) 是在时隙 $t$ 的混合云系统状态，包含当前资源的可用性和负载信息。
+\( J(t) \) 表示在时隙 $t$ 到达的任务集合，包括任务的属性和优先级。
+\( \Delta \text{COST} \) 是是当前时隙与前一时隙之间租用虚拟机数量的变化程度，可以表示为 \( || \mathbf{y}(t) - \mathbf{y}(t-1) ||_1 \)。
+\( w_1 \) 是权重系数，取值范围为 [0, 1]，用于平衡成本和满意度之间的权重。
+\( \Delta \text{SAT} \) 是指混合云队列稳定时，截止时间满足率随着虚拟机租用决策的变化而发生的变化，可以表示为
+
+\begin{equation}
+    \Delta \text{SAT}(\mathbf{y}) =
+\end{equation}
+
+满意度变化量的动态更新
+
+在混合云环境中，截止时间满足率的累计概率函数在每个调度周期内进行更新，以反映实时的系统状态和任务到达情况。具体表示为：
+
+\begin{equation}
+    F_{\text{sat}}(\mathbf{y}(t)) = P(T \leq D | \mathbf{y}(t), S(t), J(t))
+\end{equation}
+
+其中：
+
+\( F_{\text{sat}}(\mathbf{y}(t)) \) 是在时隙 \( t \) 下，基于当前虚拟机租用决策 \( \mathbf{y}(t) \)、系统状态 \( S(t) \) 和任务集合 \( J(t) \) 更新后的截止时间满足率的累计概率函数。
+\( T \) 表示任务的完成时间。
+\( D \) 是任务的截止时间。
+
+更新机制
+
+在每个调度周期内，累计概率函数 \( F_{\text{sat}}(\mathbf{y}(t)) \) 会基于以下因素进行实时更新：
+
+1. 任务到达情况：
+新到达任务的数量和属性会影响系统的负载和完成时间，从而影响满足率。
+
+2. 资源状态：
+当前租用的虚拟机数量 \( \mathbf{y}(t) \) 及其性能（如处理能力、响应时间等）会直接影响任务的处理效率。
+
+3. 历史数据：
+利用历史任务的完成时间数据，结合当前的调度策略，可以更准确地预测未来任务的完成情况。
+
+满意度变化量的更新
+
+因此，满意度变化量可表示为：
+
+\begin{equation}
+    \Delta \text{SAT}(\mathbf{y}) = F_{\text{sat}}(\mathbf{y}(t)) - F_{\text{sat}}(\mathbf{y}(t-1))
+\end{equation}
+
+在每个调度周期，随着调度决策的调整和系统状态的变化，\( F_{\text{sat}}(\mathbf{y}(t)) \) 将被不断更新，从而实时反映截止时间满足率的变化。这种动态更新机制确保了系统能够及时响应负载变化，提高任务的完成率和用户的满意度。
+
+\begin{algorithm}[H]
+    \caption{虚拟机租用}
+    \label{alg:vm-rent}
+    \begin{algorithmic}[1]
+        \REQUIRE{} $T_H(t-1), T_L(t-1), \alpha(t-1)$。
+        \ENSURE{} $y_i, T_H(t), T_L(t), \alpha(t)$
+        \STATE{} 更新$T_H(t), T_L(t), \alpha(t)$ 使用公式
+        % \eqref{null}
+        \IF{$\alpha > T_H(t)$}
+        % // 选择最近一个最近被释放的虚拟机
+        \IF{$I \ne \emptyset$}
+        \STATE{} $j \gets I[0], I \gets I[1..]$
+        \STATE{} $y_{j} = 1$
+        \ELSE
+        % 否则，选取一个新的虚拟机
+        \STATE{} $j \gets \text{arg max} M\cdot y_j + j$
+        \STATE{} $y_{j+1} = 1$
+        \ENDIF
+        \ELSE \IF{$a < T_L$}
+        \STATE{} // 释放一个负载最小的虚拟机
+        \ENDIF
+        \ENDIF
+    \end{algorithmic}
+\end{algorithm}
+
+\subsection{任务分配}
+
+在每个时隙$t$，任务分配算法需要优化子问题P2.2，通过优化决策变量$x_{ij}$，尽力满足所有任务的截止时间满足率。
+
+\begin{equation}
+    \text{arg min}_{x_{ij}} = \Delta L(t) + \sum_{j} V\cdot P(D_j \ge FT_j | S(t), x_{ij})
+    \label{eq:drift-plus-opt2}
+\end{equation}
+
+不仅需要考虑当前时隙的截止时间满足率变化，还要考虑当前决策对未来时隙的影响，因此设计了混合云负载的虚拟队列，$Q_i(t)$是时隙$t$虚拟机$i$的负载大小，$Q_i(t)$可以递归的定义如下：
+
+\begin{equation}
+    Q_i(t+1) = \max\{Q_i(t) - \beta_i(t), 0\} + \alpha_i(t)
+\end{equation}
+其中，$Q_i(t)$代表虚拟机$i$在时隙$t$时的任务积压量，
+$\beta_i(t)$代表虚拟机$i$的处理速度，
+$\alpha_i(t)$代表任务到达虚拟机$i$的到达率。
+
+我们通过遍历的办法，获取使漂移加惩罚公式\eqref{eq:drift-plus-opt2}最小的调度决策
+
+\begin{algorithm}[H]
+    \caption{任务分配}%
+    \label{alg:task-offload}
+    \begin{algorithmic}[1]
+        \REQUIRE{} 混合云状态$S(t)$, 到达任务集合$J(t)$，虚拟队列$Q(t-1)$。
+        \ENSURE{} 虚拟机调度决策 $x_{ij}$
+        \STATE{} 根据$Q(t-1)$更新虚拟队列$Q(t)$
+        % 与下面那个if语句是一个东西
+        \FOR{每个任务$j \in J$}
+        \STATE{} $x_{ij} \gets \text{arg min} $ 公式\eqref{eq:drift-plus-opt2}
+        \ENDFOR
+    \end{algorithmic}
+\end{algorithm}
+
+\subsection{执行顺序确定}
+
+为半隐私任务预留的资源，同时使用FIFO算法确定执行顺序
+
+\begin{algorithm}[H]
+    \caption{任务执行顺序调度}%
+    \label{alg:seq-sched}
+    \begin{algorithmic}[1]
+        \REQUIRE{} 混合云状态$S(t)$, 普通任务和半隐私任务$J^n_i(t), J^p_i(t)$ $z_i(t-1), d^n_i(t-1), d^p_i(t-1)$
+        \ENSURE{} 当前需要处理的任务$j$，$z_i(t), d^n_i(t), d^p_i(t)$
+        \STATE{} $z_i(t) =$ arg max P2.3
+        \IF{$\frac{d^p}{d^n} < \frac{z_i}{k_i-z_i} \land J^p_i \ne \emptyset$}
+        \STATE{} $j \gets$ arg min SUBMIT$_{j\in J^p_i}$
+        \ELSE \IF{$J^n_i \ne \emptyset$}
+        \STATE{} $j \gets$ arg min SUBMIT$_{j\in J^n_i}$
+        \ENDIF
+        \STATE{} $d^n_i(t), d^p_i(t) \gets$ 使用 $d^n(t-1), d^p(t-1), D_j, C_j$ 更新
+        \ENDIF
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{figure}
+    \begin{tikzpicture}[node distance=1.5cm]
+        % \fill[pattern=checkerboard, pattern color=gray] (0,0) rectangle (10,10);
+        % 定义节点样式
+        \tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=white!30]
+        \tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=white!30]
+        \tikzstyle{arrow} = [thick,->,>=stealth]
+
+        % 节点
+        \node (start) [startstop] {开始};
+        \node (process1) [process, below of=start] {租用决策};
+        \node (process2) [process, below of=process1] {任务分配};
+        \node (process3) [process, below of=process2] {执行顺序确定};
+        \node (stop) [startstop, below of=process3] {结束};
+
+        % 箭头
+        \draw [arrow] (start) -- (process1);
+        \draw [arrow] (process1) -- (process2);
+        \draw [arrow] (process2) -- (process3);
+        \draw [arrow] (process3) -- (stop);
+
+    \end{tikzpicture}
+    \caption{算法执行流程}
+\end{figure}

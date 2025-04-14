@@ -1,0 +1,30 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "make draft",
+            "type": "shell",
+            "command": "make",
+            // "args": [
+            //     "*.out"
+            // ],
+            "options": {
+                "cwd": "${workspaceFolder}/doc" // 指定文件夹
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "make img",
+            "type": "shell",
+            "command": "make",
+            "options": {
+                "cwd": "${workspaceFolder}/thesis/img" // 指定文件夹}
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+        },
+    ]
+}

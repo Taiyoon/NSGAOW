@@ -1,0 +1,24 @@
+digraph G {
+    graph [ranksep=0.3]
+    node [fontname="SimSun", shape=record, width=4]
+    // edge [penwidth=1.5, arrowsize=0.8]
+
+    chapter1 [label="绪\n论 | {背景与意义 | 研究现状分析 | 现有方法不足 | 研究内容框架}"
+              width=4.2, height=1.8];
+    chapter2 [label="基\n础\n知\n识|{多目标优化算法 | 混合云架构特点 | 隐私保护技术}"];
+    chapter3 [label="模型构建|{混合云资源模型 | 动态任务模型 | 隐私标签机制 | 安全量化评估}|多目标优化问题建模"];
+    chapter4 [label="算法设计|{OW-FF卸载算法 | 混合编码方案 | 动态遗传操作算子 | 偏好精英选择策略}|多目标优化算法"];
+    chapter5 [label="实\n验\n分\n析|{Pareto前沿对比 | 收敛性分析 | 隐私参数敏感度 | 跨平台效能验证}"];
+    chapter6 [label="总\n结\n展\n望|{研究成果总结 | 未来工作展望}"];
+
+    chapter1 -> chapter2 -> chapter3 -> chapter4 -> chapter5 -> chapter6
+
+    // 水平对齐设置
+    // {rank=same; chapter1; chapter2; chapter3}
+    // {rank=same; chapter4; chapter5; chapter6}
+
+    // 虚线反向关联
+    // chapter3 -> chapter2 [style=dashed, dir=back, constraint=false]
+    // chapter4 -> chapter3 [style=dashed, dir=back, constraint=false]
+    // chapter5 -> chapter4 [style=dashed, dir=back, constraint=false]
+}

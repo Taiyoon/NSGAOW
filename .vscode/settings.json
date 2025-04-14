@@ -1,0 +1,70 @@
+{
+    // "editor.formatOnSave": true,
+    "mypy-type-checker.args": [
+        "--enable-incomplete-feature=NewGenericSyntax",
+        "--strict",
+    ],
+    "python.testing.unittestEnabled": true,
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./test",
+        "-p",
+        "test_*.py"
+    ],
+    "python.testing.pytestEnabled": false,
+    "latex-workshop.view.pdf.trim": 15,
+    "latex-workshop.view.pdf.zoom": "page-width",
+    "latex-workshop.view.pdf.internal.synctex.keybinding": "double-click",
+    "latex-workshop.view.outline.sync.viewer": true,
+    "latex-workshop.linting.run": "onType",
+    "latex-workshop.intellisense.citation.backend": "biblatex",
+    "latex-workshop.bibtex-format.tab": "4 spaces",
+    "latex-workshop.formatting.latex": "tex-fmt",
+    "latex-workshop.latex.tools": [
+        {
+            "name": "xelatexmk",
+            "command": "latexmk",
+            "args": [
+                "-shell-escape",
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-xelatex",
+                "-outdir=%OUTDIR%",
+                "%DOC%"
+            ],
+            "env": {}
+        },
+        {
+            "name": "dot",
+            "command": "make",
+            "args": [
+                "-C",
+                "%DIR%/img"
+            ]
+        }
+    ],
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "dot->latexmk",
+            "tools": [
+                "dot",
+                "xelatexmk"
+            ]
+        },
+    ],
+    "mypy-type-checker.importStrategy": "useBundled",
+    "mypy-type-checker.reportingScope": "workspace",
+    "latex-workshop.formatting.tex-fmt.args": [
+        "--nowrap",
+        "--tabsize",
+        "4",
+        "--noconfig"
+    ],
+    "python.analysis.extraPaths": [
+        "./Platypus"
+    ],
+    // "notebook.formatOnSave.enabled": true,
+    // "markdown.extension.tableFormatter.enabled": false,
+}

@@ -1,0 +1,23 @@
+digraph RunnableDeps {
+    // splines="FALSE";
+    // rankdir = LR;
+    
+    
+    world -> world_scheduler
+    world -> vm_scheduler
+    vm_scheduler -> world_scheduler -> submitter
+    world -> submitter
+
+    subgraph cluster_vm1 {
+        vm 
+        vm_scheduler;
+        label = "VM1";
+        color = grey;
+        {rank=max; vm_scheduler}
+    }
+    
+    /**
+     * Ranks
+     */
+    { rank=same; submitter world_scheduler; };
+}

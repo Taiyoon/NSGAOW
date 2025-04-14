@@ -1,0 +1,35 @@
+digraph CoopDag {
+    splines = "FALSE";
+    
+    /**
+     * Entities
+     */
+    // shortName [label="shortName", shape="square"]
+    node [shape = "circle";];
+    Req1 [label = "请求1";color = red;];
+    Req2 [label = "请求2";color = blue;];
+    Req3 [label = "请求3";color = red;];
+    Req4 [label = "请求4";color = blue;];
+    
+    Req1 -> Req2 -> Req3 -> Req4 [dir = back;];
+    subgraph cluster_req {
+        node [shape = "box";];
+        color = red;
+        Transfer [label = "传输";];
+        Compute [label = "计算";];
+        NextReq [label = "下个请求";];
+        Transfer -> Compute -> NextReq;
+    }
+    Req1 -> Transfer [constraint = false; dir = none;];
+    Req1 -> NextReq [dir = none; constraint = false;];
+    // { rank=min; Req1};{ rank=max; Req4};
+    /**
+     * Relationships
+     */
+    // F1 -> shortName[label=".63"]
+    
+    /**
+     * Ranks
+     */
+    // { rank=same; shortName; };
+}

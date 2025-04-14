@@ -1,0 +1,8 @@
+digraph G {
+    splines = false;
+    rankdir = LR;
+    layout = "dot";
+    node [width = 0; height = 0; label = "";];
+    local_queue [style = solid;shape = record;label = "{<f0>|<f1>|<f2>}";];
+    p1 -> local_queue -> p2;
+}

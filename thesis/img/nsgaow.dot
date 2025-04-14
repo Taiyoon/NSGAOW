@@ -1,0 +1,51 @@
+digraph NSGA_OW_Flowchart {
+    rankdir=TB
+    node [shape=rectangle, style="rounded", fontname="Helvetica"]
+    edge [fontname="Helvetica"]
+
+    start [label="开始", shape=ellipse]
+    end [label="输出Pareto解集", shape=ellipse]
+
+    { rank=same; initialize merge }
+    { rank=same; evaluate check }
+
+    // subgraph cluster_main {
+        label="NSGA-OW优化核心";
+        fontsize=16
+
+        initialize [label="半贪婪种群初始化\n（公式\\eqref{eq:random-init}）"]
+        evaluate [label=<
+            <B>机会窗口+目标评估</B><BR/>
+            • 任务排序(OW-FF)<BR/>
+            • 计算三目标值
+        >]
+        nd_sort [label="快速非支配排序\n生成前沿层级{F₁,F₂,...}"]
+        crowding [label="带偏好拥挤度计算\n（公式\\eqref{eq:crowd-with-pref}）"]
+        selection [label="精英选择\n（算法\\ref{alg:pref-elite-choose}）"]
+        crossover [label=<
+            <B>混合交叉</B><BR/>
+            • 70%分块交叉<BR/>
+            • 30%两点交叉
+        >]
+        mutation [label=<
+            <B>混合变异</B><BR/>
+            • 成本驱动变异<BR/>
+            • 位翻转
+        >]
+        merge [label="合并父代/子代种群"]
+        check [label="达到最大迭代次数？", shape=diamond]
+    // }
+
+    start -> initialize
+    initialize -> evaluate [minlen=2]
+    evaluate -> nd_sort
+    nd_sort -> crowding
+    crowding -> selection
+    selection -> crossover [label="生成子代"]
+    crossover -> mutation
+    mutation -> merge
+    merge -> evaluate [xlabel="新一代种群" dir=back minlen=3]
+    merge -> check [style=dashed]
+    check -> end [label="Yes"]
+    check -> crossover [label="No" constraint=false ltail=check]
+}

@@ -1,0 +1,199 @@
+# -*- coding: gb18030 -*-
+# 混合云仿真环境输入模板v2，PyYAML只能解析GB18030编码
+# v2的配置是个列表，可能与v1不兼容，允许在一个文件中定义多个混合云环境
+- task100: &base_env
+    cloud:
+      private_vms:
+        # 修改repect后需要检查其他依赖于repeat的参数
+        - repeat: 10 # 产生count个对象，手动实现的函数
+          compute_capacity:
+            distribution:
+              method: uniform # np.random.Generator.uniform
+              low: 1999.0 # MHz
+              high: 2001.0 # MHz
+
+      public_vms:
+        - repeat: 10
+          type_id: 1
+          compute_capacity: 3500.0 # MHz
+          cost: 0.0104 # $/h
+        - repeat: 10
+          type_id: 2
+          compute_capacity: 7000.0 # MHz
+          cost: 0.1470 # $/h
+        - repeat: 10
+          type_id: 3
+          compute_capacity: 14000.0 # MHz
+          cost: 0.2950 # $/h
+        - repeat: 10
+          type_id: 4
+          compute_capacity: 28000.0 # MHz
+          cost: 0.5890 # $/h
+        - repeat: 10
+          type_id: 5
+          compute_capacity: 56000.0 # MHz
+          cost: 1.1790 # $/h
+
+      network:
+        bandwidth: 100.0 # Mbps
+        propagation_delay: 0.075 # （75ms)
+        o_transback: 0.1 # 尚未读取，修改他没用
+
+    privacy_schemes:
+      # 策略基础模板
+      # 安全策略的开销一定要有一个梯度，要成指数级别，不然算法没动力优化
+      # 私有虚拟机资源一定要不足，才有动力使用加密策略
+      # 很反直觉的是，隐私偏好越少，安全优化算法的作用越大
+      # base_strategies: &base_strategies
+      #   - [0.9, 16.5, 50.2] # [安全等级, 加密开销, 解密开销]
+      # - [0.7, 8.4, 25.2]
+      # - [0.5, 4.3, 14.2]
+      # - [0.3, 2.2, 1.1]
+      # - [0.1, 1., 1.1]
+      # - [0.05, 0.0, 0.0]
+      # 各隐私偏好的策略配置，见表5.2-5.4
+      # 修改时注意相关依赖
+      preferences:
+        - type_id: 0 # 中国
+          strategies:
+            - [0.9, 599.53, 605.63]
+            - [0.2, 112.41, 112.41]
+        - type_id: 1 # 美国
+          strategies:
+            - [0.9, 600.825, 255.4]
+            - [0.26, 112.15, 66.15]
+        - type_id: 2 # 欧洲
+          strategies:
+            - [0.6, 600.75, 183.20]
+            - [0.26, 112.15, 66.15]
+    privacy_data_template: &pd_base
+      repeat: 0
+      preference_type:
+        distribution:
+          method: integers
+          low: 0
+          high: 3 # len(privacy_schemes.preferences)
+      # 取值范围应该在10Mbit以上，数据过小Pareto前沿长的太难看
+      size:
+        distribution:
+          method: uniform # np.random.Generator.uniform
+          low: 54.
+          high: 56.
+      min_security:
+        distribution:
+          method: uniform # np.random.Generator.uniform
+          low: -0.1
+          high: 0.1
+      storage_nodes_indices: # 未验证
+        distribution:
+          method: no_replace_integers # 存储节点选择，自定义函数
+          low: 0
+          high: 10 # len(cloud.private_vms)
+          size:
+            distribution:
+              method: integers # 副本数生成，一个数据存储在1-5个节点中
+              low: 5
+              high: 6 # < len(cloud.private_vms)+1
+    privacy_data:
+      # 检查其他依赖的设置
+      - <<: *pd_base
+        repeat: 240
+        min_security:
+          distribution:
+            method: uniform # np.random.Generator.uniform
+            low: -0.1
+            high: 0.1
+      # 检查其他依赖的设置
+      - <<: *pd_base
+        repeat: 720
+        min_security:
+          distribution:
+            method: uniform # np.random.Generator.uniform
+            low: 0.4
+            high: 0.5
+      # 检查其他依赖的设置
+      - <<: *pd_base
+        repeat: 240
+        min_security:
+          distribution:
+            method: uniform # np.random.Generator.uniform
+            low: 0.9
+            high: 1.0
+
+    tasks:
+      # 任务数量500时前沿比较密集，但迭代太慢
+      # 50个任务迭代200轮大约1分钟，前沿效果也很好
+      - repeat: 100
+        compute_intensity:
+          distribution:
+            method: uniform # np.random.Generator.uniform
+            low: 899.
+            high: 901.
+        data_assignment:
+          # distribution:
+          #   method: bounded_zipf # 组合分布：Zipf采样 + 过滤超出范围的数字
+          #   high: 1000 # len(privacy_data)
+          #   # Zipf分布参数
+          #   a: 1.1 # 形状参数a > 1
+
+          distribution:
+            method: integers
+            low: 0
+            high: 1000 # = len(privacy_data)
+# 第二个环境
+- task200:
+    <<: *base_env
+    tasks:
+      - repeat: 200
+        compute_intensity:
+          distribution:
+            method: uniform # np.random.Generator.uniform
+            low: 899.
+            high: 901.
+        data_assignment:
+          distribution:
+            method: integers
+            low: 0
+            high: 1000 # < len(cloud.private_vms)+1
+- task300:
+    <<: *base_env
+    tasks:
+      - repeat: 300
+        compute_intensity:
+          distribution:
+            method: uniform # np.random.Generator.uniform
+            low: 899.
+            high: 901.
+        data_assignment:
+          distribution:
+            method: integers
+            low: 0
+            high: 1000 # < len(cloud.private_vms)+1
+- task400:
+    <<: *base_env
+    tasks:
+      - repeat: 400
+        compute_intensity:
+          distribution:
+            method: uniform # np.random.Generator.uniform
+            low: 899.
+            high: 901.
+        data_assignment:
+          distribution:
+            method: integers
+            low: 0
+            high: 1000 # < len(cloud.private_vms)+1
+- task500:
+    <<: *base_env
+    tasks:
+      - repeat: 500
+        compute_intensity:
+          distribution:
+            method: uniform # np.random.Generator.uniform
+            low: 899.
+            high: 901.
+        data_assignment:
+          distribution:
+            method: integers
+            low: 0
+            high: 1000 # < len(cloud.private_vms)+1

@@ -1,0 +1,326 @@
+\chapter{混合云中动态细粒度的隐私任务调度模型}\label{chapter:model}
+
+针对混合云任务调度中难以平衡安全与效率、跨云调度效率低下以及缺少细粒度隐私保护三个问题，本章提出了一种动态细粒度的隐私任务调度模型。该模提出了混合云安全性评估指标，量化低安全系数隐私加密算法对隐私数据的潜在风险，为平衡安全性与效率提供依据。同时，通过设计支持公私云协作的动态任务模型，通过在调度过程中插入加密与验证子任务，精确建模隐私加密算法开销，为优化公私云协作效率打下基础。此外，模型采用细粒度隐私标签机制，为数据匹配合适的隐私加密算法组，从而精准满足不同数据所有者的隐私保护需求。
+
+在章节组织上，本章首先在\ref{sec:cloud-define}节构建混合云资源模型，明确混合云架构与虚拟机的网络及计算资源特性；在\ref{sec:task-model}节提出支持公私云协作的动态任务模型，该模型可在独立执行模式与跨云协作模式之间灵活切换，并通过在调度过程中插入加密与验证子任务以及对任务计算网络与计算资源占用的精确建模，描述了跨云协作中的任务处理过程；在\ref{sec:privacy-system}节，结合隐私数据大小与加密算法安全系数，构建了混合云隐私安全性量化指标；最后，在\ref{sec:opt-prob}节建立了以完工时间、安全性及成本为目标的优化问题，定义决策空间与约束条件，为后续多目标优化算法的设计提供了依据。
+
+% 通过上述模型构建，本章为混合云隐私任务调度的安全与效率的平衡提供了完整的数学框架，还为后文多目标优化算法奠定基础。
+
+通过构建混合云中动态细粒度的隐私任务调度模型，本章为混合云隐私任务调度中安全性与效率的平衡建立了完整的数学框架，同时为后文多目标优化算法的设计奠定基础。
+
+% 混合云架构通过整合公有云的丰富资源与私有云的隐私保障能力，为隐私数据处理提供了高效平台。然而，现有任务调度策略存在着缺乏安全性的量化评估指标，导致安全与效率难以平衡的问题，此外，还存在着静态的任务模型导致跨云调度效率低下，粗粒度隐私标签难以适配不同数据所有者差异化隐私需求的问题。针对上述问题，本章提出一种混合云中动态细粒度的隐私任务调度模型。首先，采用细粒度隐私标签机制，可根据不同类型数据的隐私标签自动调整选用的隐私加密算法组；其次，设计了能更好地支持公私云协作的动态任务模型，能够调度时动态插入加密与验证子任务，以提升协作能力；最后，提出量化的混合云安全性指标，关联隐私保护强度与执行效率，支撑多目标优化调度，从而平衡任务处理效率与隐私安全性。
+% 混合云架构通过有效整合公有云的资源弹性与私有云的隐私保护优势，为隐私数据处理提供了高效的计算平台。然而，现有任务调度策略仍面临多重挑战：首先，缺乏有效的安全性量化评估机制，导致安全与效率难以实现最佳平衡；其次，静态任务模型难以适应跨云场景下的动态需求，调度效率受到限制；再次，粗粒度的隐私标签机制无法满足不同数据所有者的差异化隐私保护要求。为应对这些问题，本文提出一种混合云环境中动态细粒度的隐私任务调度模型。该模型具有三方面创新特性：其一，引入了细粒度的隐私标签机制，能够根据数据的敏感性动态选择适配的加密算法；其二，设计了支持公有云与私有云高效协作的动态任务模型，可在调度过程中灵活插入加密和验证等子任务，优化跨云协作效率；其三，提出了量化的混合云安全性评估指标，通过构建隐私保护强度与任务执行效率的关联模型，为多目标优化调度提供理论依据，从而实现任务处理效率与隐私安全性的有机平衡。这一模型旨在为混合云环境下的隐私任务调度提供更加灵活、高效的解决方案。
+
+\section{混合云资源模型}\label{sec:cloud-define}
+
+混合云协调私有云的隐私保护能力与公有云的丰富计算资源，形成了一个具备隐私敏感数据处理能力的异构计算环境。如图\ref{fig:hybrid-arch}所示，该系统由两个资源池组成:
+
+私有云资源池$\mathcal{S} = \{s_1, s_2, ..., s_S\}$，由$S$台异构虚拟机组成，其中$s_i$（$i \in \{1,...,S\}$）表示第$i$台私有虚拟机，其计算能力独立配置；公有云资源池$\mathcal{V}$提供$J$种虚拟机类型（$\mathcal{J} = \{1,...,J\}$），\(n \in \{1,2,\dots,N_j\}\)，表示类型\(j\)的第\(n\)个虚拟机，类型$j$的公有虚拟机实例记为$v_{(j,n)}$（$n \in \{1,...,N_j\}$），其全局索引由复合下标$(j,n)$唯一标识，复合下标计算方式见公式\eqref{eq:pubid-enumeration}。公有虚拟机的租用成本$R_j$与类型$j$的计算能力$B_j$正相关，由云服务商定价。
+混合云中的隐私数据存储在私有云虚拟机中，其具体定义详见\ref{subsec:data-formulation}小节。
+
+\begin{equation}
+    (j,n) = \sum_{j'<j} N_{j'} \cdot j' + n
+    \label{eq:pubid-enumeration}
+\end{equation}
+
+\begin{figure}[htb]
+    \centering
+    \includesvg{img/hybrid-arch.drawio.svg}
+    \caption{混合云系统架构示意图}
+    \label{fig:hybrid-arch}
+\end{figure}
+
+在计算能力配置方面，私有云虚拟机$s_i$的计算能力为$A_i$（MHz），即每秒可执行$A_i$兆次CPU运算。而公有云虚拟机$v_{(j,n)}$继承其所属虚拟机类型的计算能力$B_j$（MHz）。不失一般性的，本文认为假设$B_j$与其类型下标$j$满足单调递增关系$B_1 < B_2 < \cdots < B_J$，即公有云虚拟机类型编号越大，其计算能力越强。在网络连接方面，私有云与公有云之间通过带宽固定的半双工通道直接通信，数据传输速率限定为$\beta_{\text{net}}$（Mbps）。基于此设计，跨云传输一条隐私数据\(d\)的时延可以表示为：
+\begin{equation}
+    T^{\text{trans}}(d) = \frac{\text{size}(d)}{\beta_{\text{net}}} + \tau_{\text{prop}}\label{eq:transmit-time}
+\end{equation}
+其中$\text{size}(d)$表示隐私数据的大小，$\tau_{\text{prop}}$为固定时延。这一传输时间计算模型为后续任务调度中跨云协作的总时间评估提供了关键依据。
+
+混合云系统运营成本主要由公有云资源租用开销组成。本文采用主流云服务商按秒计费的定价机制，虚拟机$v_{(j,n)}$的计费时间$T_{(j,n)}$定义为其实例内最后一个任务的完成时刻，具体表达式为：
+\begin{equation}
+    T_{(j,n)} = \max_{m \in \mathcal{M}} \left( \text{FT}(e_m) \cdot \mathbf{Y}[m][(j,n)] \right)
+    \label{eq:vm-time}
+\end{equation}
+其中$\mathbf{Y}[m][(j,n)]$为二元决策变量，当任务$e_m$分配至虚拟机$v_{(j,n)}$时取值为1，否则为0。基于此，系统总运营成本可量化为所有公有云实例费用之和：
+\begin{equation}
+    \text{Cost} = \sum_{j=1}^J \sum_{n=1}^{N_j} R_j \cdot T_{(j,n)}
+    \label{eq:cost}
+\end{equation}
+其中$R_j$表示类型$j$虚拟机每秒租用成本。完成时间的缩短直接减少虚拟机租用时长$T_{(j,n)}$，从而降低公有云租用成本；而安全性约束的增强可能限制可用虚拟机类型的选择范围，进而影响公有云租用成本。根据成本目标与完成时间和安全性之间的关联性，本文在第四章算法设计中采用一种优先级策略，优化成本目标，从而实现调度的综合性能提升。
+
+本节从任务调度研究的角度出发，对混合云模型进行了适当简化。首先，不考虑私有云和公有云内部的多层次网络架构，将混合云网络抽象为私有云与公有云之间的直接连接结构；其次，任务调度过程采用非抢占式执行模式，即任务执行期间独占计算资源直至完成。最后，在成本建模中仅考虑公有云虚拟机的租用成本，因为私有云成本主要由建设、维护等固定费用组成，与调度无关，故忽略这一部分。这些简化符合混合云任务调度的建模惯例\cite{wangAdaptiveCloudBundle2023}，保留混合云中异构虚拟机资源的特征，为后续章节提供基本的混合云环境定义。
+
+\section{公私云协作的动态任务模型}\label{sec:task-model}
+
+本节提出一种考虑公私云协作的的动态任务建模方法，其动态特性主要体现在任务调度期间可切换执行模式：根据调度器选择的隐私加密算法，任务有不同的处理流程。具体而言，当任务被调度至私有云执行时（后文称为独立模式），其处理流程为单一任务；若需通过公有云协作执行（后文称为协作模式），则系统会在任务处理前于私有云节点动态插入数据加密子任务，并在处理后追加数据完整性验证子任务，以精确建模隐私加密算法开销。同时，将网络传输时间与计算时间分别独立建模，以精确描述公私云跨云协作中的资源竞争特征。
+
+\subsection{任务与任务执行模式的定义}
+
+混合云系统中待处理的任务集合定义为$\mathcal{E} = \{e_1, e_2, \dots, e_M\}$，其中$M$为任务总数。每个任务$e_m$在提交时关联唯一的隐私数据$d_k \in \mathcal{D}$，且所有隐私数据仅存储于私有云以满足安全性要求。任务特征通过数据规模$\text{size}(e_m) \triangleq \text{size}(d_k)$（单位为兆比特，Mbit）以及计算强度$o_{\text{proc}}(e_m)$（单位为CPU周期/bit）两个关键指标描述，分别表示任务执行所需的隐私数据量以及处理单位比特数据所需的平均CPU周期。其中，计算资源总需求可表示为$o_{\text{proc}}(e_m) \times \text{size}(e_m)$，该公式仅涵盖任务处理过程中的计算开销，不包括加解密操作的开销。计算强度作为任务固有属性，根据其算法类型、数据处理逻辑等特征预先配置\cite{fanCollaborativeServicePlacement2024}，为后续任务调度与资源分配提供了重要的量化依据。
+
+任务的执行模式由安全策略矩阵$\mathbf{Z}$动态确定：当调度策略选择$\mathbf{Z}[m][0]=1$（最高安全等级策略）时，任务$e_m$以独立模式$e_m^{\text{(SA)}}$在私有云内执行；若采用其他安全策略，则系统形成公私云协作的线性工作流（Linear Workflow, LW）\cite{stavrinidesMulticriteriaSchedulingLinear2021} $e_m = \{e_m^\text{(E)}, e_m^\text{(P)}, e_m^\text{(V)}\}$,在预处理阶段插入加密子任务$e_m^\text{(E)}$，并将计算子任务$e_m^\text{(P)}$卸载至公有云执行，最终在私有云追加验证子任务$e_m^\text{(V)}$。
+执行模式的决策可形式化为：
+
+\begin{equation}
+    e_m \triangleq
+    \begin{cases}
+        e_m^{\text{(SA)}}, & \mathbf{Z}[m][0]=1 \\
+        \{e_m^\text{(E)}, e_m^\text{(P)}, e_m^\text{(V)}\}, & \text{其他}
+    \end{cases}
+\end{equation}
+其中，安全策略矩阵$\mathbf{Z}$用于动态确定任务的执行模式：$\mathbf{Z}[m][0]=1$表示任务$e_m$采用私有云内独立执行的安全策略，其安全策略矩阵具体定义见第\ref{sec:privacy-system}节。
+
+\subsection{完成时间计算}
+
+本文考虑的动态任务模型具有“云爆发”能力，当混合云整体负载显著增加时，调度器可通过调整安全策略将部分任务的$\mathbf{Z}[m][0]$设置为非1值，触发协作模式，将计算工作负载卸载至公有云，同时使私有云资源得以释放以处理其他任务。本小节建立任务完成时间的数学模型。
+
+当$\mathbf{Z}[m][0] = 1$时，任务$e_m^{\text{(SA)}}$以独占模式运行，占用虚拟机资源直至处理完毕。其完成时间可建模为：
+\begin{equation}
+    \text{FT}(e_m^{\text{(SA)}}) = \text{ST}(e_m^{\text{(SA)}}) + \frac{\text{size}(e_m) \cdot o_{\text{proc}}(e_m)}{\sum_{i=1}^S A_i \cdot \mathbf{X}[m][i]}
+    \label{eq:sa-finish-time}
+\end{equation}
+式中，$\mathbf{X} \in \{0,1\}^{S \times M}$为私有虚拟机分配矩阵，$\mathbf{X}[m][i]=1$表示任务分配至$s_i$，$\text{ST}(e_m^{\text{(SA)}})$表示任务开始时间，其受虚拟机中任务执行顺序\(\mathbf{\Pi}\)影响；$A_i$为虚拟机$s_i$的计算能力CPU频率。数据规模$\text{size}(e_m)$与计算强度$o_{\text{proc}}(e_m)$之积表示任务的计算量。
+
+当$\sum_{q = 1}^{Q} \mathbf{Z}[m][q] = 1$时，任务$e_m$在协作模式下执行，采用线性工作流建模。该任务将被分解为三个部分：加密子任务$e_m^\text{(E)}$、处理子任务$e_m^\text{(P)}$和验证子任务$e_m^\text{(V)}$，三者需满足$e_m^\text{(E)}$依赖于 $e_m^\text{(P)}$依赖于 $e_m^\text{(V)}$的顺序关系，即前驱子任务必须完全完成后才能启动后续子任务。图\ref{fig:coop-task}展示了各阶段的资源占用时序。下面首先介绍各子任务的完成时间，随后通过分类讨论私有虚拟机中执行加密、验证与独立任务时的三种并行关系以确定起始时间，最后基于上述计算给出混合云系统的完工时间公式。
+
+\begin{figure}[htb]
+    \includesvg{img/任务时序图.drawio.svg}
+    \caption{协作模式下的任务处理时序与资源占用示意图}\label{fig:coop-task}
+\end{figure}
+
+加密子任务$e_m^\text{(E)}$在私有云执行期间产生的时间开销包含加密计算和数据传输两个阶段，其完成时间可表述为：
+\begin{equation}
+    \text{FT}(e_m^\text{(E)}) = \text{ST}(e_m^\text{(E)}) + \frac{\text{size}(e_m)\cdot o_{\text{enc}}(e_m)}{A_i} + T_{\text{trans}}(\text{size}(e_m))
+    \label{eq:enc-finish-time}
+\end{equation}
+其中$\text{ST}(e_m^\text{(E)})$表示子任务的开始时间，$o_{\text{enc}}(e_m)$为加密计算强度系数（其计算规则详见第\ref{sec:privacy-system}节），$A_i$为私有云虚拟机$s_i$的CPU频率，$T_{\text{trans}}(\text{size}(e_m))$为隐私数据后的传输时间（定义参见公式\eqref{eq:transmit-time}）。本文假设加密过程保持数据体积不变，即$\text{size}(e_m^{\text{(E)}}) = \text{size}(e_m)$，这是因为多数加密算法（如AES）密文大小与原文基本保持一致，不会导致数据规模显著膨胀。
+
+处理子任务$e_m^\text{(P)}$的完成时间由以下三个阶段的时间开销组成：首先对输入的加密数据进行解密，随后进行处理，最后再对处理结果进行加密。其计算模型可表述为：
+\begin{equation}
+    \text{FT}(e_m^\text{(P)}) = \text{ST}(e_m^\text{(P)}) + \frac{\text{size}(e_m) \cdot \left(o_{\text{dec}} + o_{\text{proc}}(e_m) + 0.1\times o_{\text{enc}} \right)}{B_j}\label{eq:proc-finish-time}
+\end{equation}
+其中，$\text{ST}(e_m^\text{(P)})$表示子任务的开始时间，$\text{size}(e_m)$为输入数据规模，$B_j$为公有云虚拟机的计算能力。计算强度系数由三部分构成：$o_{\text{dec}}$表示解密计算开销，$o_{\text{proc}}(e_m)$为数据处理开销，$0.1\times o_{\text{enc}}$则对应于结果数据的再加密开销。本文约定计算结果大小为输入数据规模的10\%，即$\text{size}(d_\text{r}) = 0.1 \cdot \text{size}(e_m)$，该设定基于典型数据处理场景中输出数据普遍远小于输入数据的特征。
+
+验证子任务$e_m^\text{(V)}$的完成时间由结果数据回传和验证解密两个阶段构成，其计算模型为：
+\begin{equation}
+    \text{FT}(e_m^\text{(V)}) = \text{ST}(e_m^\text{(V)}) + T_{\text{trans}}(e_m^\text{(V)}) + \frac{\text{size}(e_m^\text{(V)}) \cdot o_{\text{dec}}}{A_i}
+    \label{eq:verf-finish-time}
+\end{equation}
+式中$\text{ST}(e_m^\text{(V)})$表示子任务开始时间，$\text{size}(d_\text{r}) = 0.1 \cdot \text{size}(e_m)$为处理结果的数据规模，$T_{\text{trans}}(d_\text{r})$表示加密结果的回传时延（计算方式与公式\eqref{eq:transmit-time}一致）。$o_{\text{dec}}$为解密计算强度系数，$A_i$为私有云虚拟机的计算能力。
+
+为提高公私云间的协作效率，本文针对混合云环境中虚拟机的网络与计算资源特性，提出了一种解耦网络与计算资源的任务执行方式。该方式允许同一任务在执行期间仅占用单一类型资源（网络或计算），而释放另一种资源供其他任务使用，从而显著提高了系统的并行性与资源利用率。然而，这种资源解耦方式可能导致任务执行顺序发生变化，进而使任务开始时间无法确定。为保证开始时间的可计算性，记混合云的任务序列为\( \{ e_1, e_2, ..., e_{N} \} \)，其执行顺序\( \mathbf{\Pi} \subset \mathcal{E} \times \mathcal{E} \)是一个链式结构且满足严格偏序关系，确保了任务执行顺序唯一，具体可表示为：
+
+\begin{equation}
+    \mathbf{\Pi} = \{(e_m, e_{m+1}) \mid 1 \leq m \leq N-1 \}
+\end{equation}
+
+定义前驱映射函数\( \text{prev}: \mathcal{E} \to \mathcal{E} \cup \{\bot\} \)，用于根据任务执行顺序\(\mathbf{\Pi}\)计算任务开始时间：
+\begin{equation}
+    \text{prev}(e_m) =
+    \begin{cases}
+        e_{m-1}, & \text{若存在}\ m \in [2, N_i]\ \text{使得}\ e_m = e_m \\
+        \bot, & \text{若}\ e_m\ \text{是虚拟机中第一个任务}
+    \end{cases}
+    \label{eq:prev-func}
+\end{equation}
+其中\(\bot\)表示空值，即该任务无前驱任务。
+
+对于无前驱任务，其开始时间为：
+\begin{equation}
+    \mathrm{ST}(e_m^{(\mathrm{ANY})}) = 0 \text{，当}e_m = \bot
+\end{equation}
+其中，上标\( (\mathrm{ANY}) \in \{\text{E,SA,P}\} \)表示子任务的类型，其含义为任意无前驱子任务的开始时间都为0。
+
+当任务$e_m^{(\mathrm{ANY})}$存在前驱任务$\text{prev}(e_m^{(\mathrm{ANY})}) \neq \bot$时，其开始时间需根据前驱任务与当前任务的资源占用特征动态计算。首先对任务类别进行划分：单阶段任务仅占用计算资源，包括处理任务$e^{(\mathrm{P})}$与独立任务$e^{(\mathrm{SA})}$；双阶段任务分两个阶段使用资源，例如加密任务$e^{(\mathrm{E})}$依次占用计算→网络资源完成加密与传输，而验证任务$e^{(\mathrm{V})}$依次占用网络→计算资源用于接收与验证。
+
+根据任务组合的资源占用特征，前驱任务与当前任务的交互可归纳为三类并行模式，共包含10种组合（私有云内9种$\{\mathrm{E,V,SA}\} \times \{\mathrm{E,V,SA}\}$，公有云1种$\{\mathrm{P}\} \to \{\mathrm{P}\}$，其详细定义见表\ref{tab:parallel-relation}）。第一类是顺序执行模式，适用于两任务存在资源冲突的场景，例如加密任务$e^{(\mathrm{E})}$与验证任务$e^{(\mathrm{V})}$分别在计算→网络阶段重叠，需要完全顺序执行。第二类是可中途并行模式，适用于前驱任务完成首阶段后释放部分资源的情况，例如加密任务$e^{(\mathrm{E})}$完成加密计算阶段后可执行独立任务$e^{(\mathrm{SA})}$。第三类是可在开始并行，适用于资源需求互补的场景，例如独立任务$e^{(\mathrm{SA})}$与验证任务$e^{(\mathrm{V})}$可分别占用计算与网络资源，实现即时并行执行。这些模式通过精确建模任务间的资源依赖关系，为调度算法的设计与分析提供了理论基础。
+
+\begin{table}[htb]
+    \centering
+    \caption{任务组合的并行性分类} \label{tab:parallel-relation}
+    \begin{tblr}{ccc}
+        \toprule
+        前驱任务类型 & 当前任务类型 & 并行性 \\
+        \midrule
+        E    & V    & 顺序执行 \\
+        E    & SA   &  \\
+        V    & E    &  \\
+        V    & SA   &  \\
+        SA   & E    &  \\
+        SA   & SA   &  \\
+        P    & P    &  \\
+        \midrule
+        E    & E    & 可中途并行 \\
+        E    & SA   &  \\
+        V    & V    &  \\
+        \midrule
+        SA   & V    & 可在开始并行 \\
+        \bottomrule
+    \end{tblr}
+\end{table}
+
+本文采用分步计算方法计算任务开始时间：首先基于虚拟机内部顺序执行的约束（即每个任务除第一个外都有一个直接前驱任务，且任务仅在前驱任务完成后才能启动），计算前驱任务驱动的初始开始时间$\mathrm{ST}_{\mathrm{local}}$，随后结合跨云协作的任务依赖关系，计算最终开始时间$\mathrm{ST}$。这一方法不仅确保了任务完成时间计算的确定性，避免了并行执行可能引发的资源竞争问题，同时也为调度算法的设计提供了理论基础。
+
+虚拟机内部时序计算：基于虚拟机$s_i$内的任务执行序列$\mathbf{\Pi}_i$，计算任务在虚拟机内部开始时间$\mathrm{ST}_{\mathrm{local}}$，其表达式为：
+\begin{align}
+    \mathrm{ST}_{\mathrm{local}}(e_m) &=
+    \begin{cases}
+        \text{FT}(e_m^\text{(PRED)}) & \text{顺序执行} \\
+        \max \left\{
+            \begin{aligned}
+                &\text{ST}'(e_m^\text{(PRED)}) + T_{\text{s1}}(e_m^\text{(PRED)}), \\
+                &\text{FT}(e_m^\text{(PRED)}) - T_{\text{s1}}(e_m^\text{(NOW)})
+            \end{aligned}
+        \right\} & \text{可中途并行} \\
+        \max \left\{
+            \begin{aligned}
+                &\text{ST}'(e_m^\text{(PRED)}), \\
+                &\text{FT}(e_m^\text{(PRED)}) - T_{\text{s1}}(e_m^\text{(NOW)})
+            \end{aligned}
+        \right\}  & \text{可在开始并行}
+    \end{cases}
+    \label{eq:st_local}
+\end{align}
+其中，第一阶段的执行时间可以表示为：
+
+\begin{equation}
+    T_{s1}(e_m) =
+    \begin{cases}
+        T_{\mathrm{comp}}(e_m^{(\mathrm{E})}) = \cfrac{\text{size}(e_m) \cdot o_{\text{enc}}(e_m)}{A_i}, & e_m \in \mathcal{E}_{\mathrm{E}} \\
+        T_{\mathrm{trans}}(e_m^{(\mathrm{V})}) = \cfrac{\text{size}(e_m)}{B}, & e_m \in \mathcal{E}_{\mathrm{V}}
+    \end{cases}
+    \label{eq:stage1_time}
+\end{equation}
+
+跨云协作的开始时间修正，考虑跨云协作任务之间的数据流依赖（加密任务→处理任务→验证任务顺序关系），得到最终的开始时间$\mathrm{ST}$：
+
+\begin{align}
+    \mathrm{ST}(e_m) &=
+    \begin{cases}
+        \mathrm{ST}_{\mathrm{local}}(e_m), & e_m \in \mathcal{E}_{\mathrm{E}} \cup \mathcal{E}_{\mathrm{SA}} \\
+        \max\left\{ \mathrm{ST}_{\mathrm{local}}(e_m^{(\mathrm{P})}),\, \mathrm{FT}(e_m^{(\mathrm{E})}) \right\}, & e_m \in \mathcal{E}_{\mathrm{P}} \\
+        \max\left\{ \mathrm{ST}_{\mathrm{local}}(e_m^{(\mathrm{V})}),\, \mathrm{FT}(e_m^{(\mathrm{P})}) \right\}, & e_m \in \mathcal{E}_{\mathrm{V}}
+    \end{cases}
+    \label{eq:st_global}
+\end{align}
+
+图\ref{fig:task-start-time}直观展示了三类并行性任务的执行时序。以可在中途并行任务组合为例，当加密任务完成计算阶段并释放计算资源后，系统可立即启动下一个加密任务的计算过程，同时使用网络资源传输数据，可以同时使用网络与计算资源。这种资源解耦任务模型可以充分利用混合云的网络与计算资源，为设计算法减少系统完工时间提供依据。
+
+\begin{figure}[htb]
+    \includesvg{img/任务开始时间.drawio.svg}
+    \caption{网络与计算资源互补的任务执行时序示意图}\label{fig:task-start-time}
+\end{figure}
+
+混合云系统的完工时间（Makespan）定义为系统处理完成当前任务集合全部任务的最晚完成时间，其数学表示为：
+\begin{equation}
+    \text{Makespan} = \max_{e_m \in \mathcal{M}} \text{FT}(e_m)
+    \label{eq:makespan}
+\end{equation}
+其中任务完成时间\(\text{FT}(e_m)\)由公式\eqref{eq:sa-finish-time}\eqref{eq:enc-finish-time}\eqref{eq:proc-finish-time}和\eqref{eq:verf-finish-time}定义。
+
+\section{细粒度的隐私数据标签}\label{sec:privacy-system}
+
+现有隐私任务调度在隐私数据保护方面面临两大挑战：一是在混合云中，不同数据拥有者的隐私偏好差异导致安全性降低，且同类计算任务往往需要重复设计专用的隐私处理方案；二是安全性与效率难以平衡，现有方法因缺乏对安全策略的量化建模能力，无法确定不同安全策略对混合云安全性的具体影响。针对上述问题，本文提出了一种细粒度的隐私数据标签。首先，将数据拥有者的隐私需求映射为对不同隐私加密算法组的要求，调度算法通过灵活组合加密算法适配多样化隐私偏好，从而支持处理来自不同数据拥有者的计算任务。其次，通过量化安全等级与脆弱性评分，建立了混合云系统安全性的量化指标。这使得调度算法在满足最低安全需求的同时，既可以选择高安全性加密算法进一步提升系统安全性，也能够根据系统负载动态调整策略以提高处理效率。
+
+\subsection{隐私数据的基本属性}\label{subsec:data-formulation}
+
+隐私数据集在混合云的私有虚拟机中存储，其定义为$\mathcal{D} = \{d_1, d_2, \dots, d_K\}$，其中$K$为数据总数量。每条隐私数据$d_k$包含四个基本属性：数据大小、存储位置、隐私标签和最低安全等级：数据大小$\text{size}(d_k)$表示隐私数据的数据量，单位为Mbit；存储位置描述了隐私数据在私有云虚拟机中的分布,一条隐私数据可以存储在不同的私有云虚拟机中，本文采用矩阵$\mathbf{L} \in \{0,1\}^{K \times S}$进行编码，$\mathbf{L}[k][i] = 1$表示数据$d_k$存储在虚拟机$s_i$中。例如，在公式\eqref{eq:loc-example}所示的存储分布矩阵中，数据$d_1$存储在虚拟机$s_1$和$s_2$中，而数据$d_2$仅存储在虚拟机$s_3$中：
+
+\begin{equation}
+    \mathbf{L} =
+    \begin{bmatrix}
+        1 & 1 & 0 \\
+        0 & 0 & 1
+    \end{bmatrix} \label{eq:loc-example}
+\end{equation}
+
+隐私数据\(d_k\)的隐私标签$\text{Pref}(d_k)$由混合云管理者根据数据所有者的合规性要求手动设置（例如，若数据所有者偏好商用密码系列算法，则$\text{Pref}(d_k)=0$），用于指导调度算法选择适配的安全策略。最低安全等级$\alpha_{\min}(d_k) \in [0,1]$定义了调度算法可接受的最低安全阈值，在混合云资源不足时，调度算法可在满足最低安全等级的前提下，适度降低部分数据的安全等级，以提高任务处理效率。而在资源充足时，调度算法优先选择最高安全等级的策略，以提升系统整体安全性；
+
+\subsection{隐私加密算法组}
+
+本文以混合云任务调度领域常用的三类隐私加密算法为例，定义了以下隐私标签：$\text{Pref}=0$表示数据拥有者倾向于采用国家密码标准算法组合（如SM4+SM3）；$\text{Pref}=1$表示数据拥有者更倾向使用NIST推荐算法组合（如AES-256+SHA-1）；$\text{Pref}=2$表示数据拥有者更倾向采用欧盟ECRYPT密码算法征集计划的胜出算法（如HC-128+SHA-1）。值得注意的是，隐私标签的构建不仅限于对不同组织推荐的隐私加密算法算法要求，还可考虑不同数据类型与应用场景（如图像、文字、音视频等）的多样化需求，例如对于街景图片，可以局部模糊处理则可以遮挡人物图像、车牌路牌等敏感信息。
+
+针对每类隐私标签，本文构建了独立的隐私加密算法组。每个算法组包含$Q_p$个策略，编号为$\text{Pref}p\text{-}q$，其中$q \in \{1, 2, ..., Q_p\}$。为简化调度设计，本文约定所有算法组的策略总数相同，即$Q = Q_1 = Q_2 = Q_3$。此外，每个算法组中固定包含编号为$q=0$的私有云内处理策略，且该策略不计入$Q_p$。也就是，$q \geq 1$为跨云协作策略，其安全等级$\alpha(\text{Pref}p\text{-}q)$随编号增大单调递减，而加密与解密开销$o_\text{enc}(\text{Pref}p\text{-}q)$则递增。
+
+任务调度需满足隐私合规性约束，即调度算法选择的安全策略必须满足最低安全需求约束，其数学表达为：
+\begin{equation}
+    \text{C1:}
+    \alpha(e_m, q) \geq \alpha_{\min}(d_k) \quad \text{当} \ \mathbf{Z}[m][q]=1 \ \text{且} \ \text{data}(e_m)=d_k
+    \label{eq:min-security}
+\end{equation}
+其中$\alpha(\cdot)$为隐私加密算法的安全系数，此约束允许调度算法选择不同安全系数的隐私加密算法，优化系统安全性或任务执行效率。
+
+\subsection{系统安全性优化目标设计}
+在混合云环境中，尽管私有云内计算可提供最高安全等级，但突发负载、大规模请求或数据共享需求往往需要将部分隐私数据交由公私云协作处理，从而导致潜在的数据泄露风险。为量化公私云协作可能带来的隐私风险，本文设计了安全性优化目标，旨在辅助调度算法在任务卸载时选择最优策略，以最大限度地降低系统潜在风险。本文的安全性优化目标与混合云中数据价值与其脆弱性评分有关，通过这一量化指标能够有效评估任务卸载过程中的风险水平，为调度决策提供科学依据。
+
+首先，现有研究已通过数据相似性、分布距离等方法实现对数据价值的量化估计\cite{pandeyPrivacyAwareDataAcquisition2024, wangPrivacyFriendlyApproachData2023}。然而，本文侧重于任务调度场景，采用了一种简化的数据价值模型，将数据价值定义为数据大小$\text{size}(d)$。这一模型基于一个直观假设，数据量越大，其价值越高。尽管这是一种较为粗略的评估方式，但能够在混合云环境中较好地反映数据的相对价值，为后续混合云安全性执行提供了基础依据。其次，通过脆弱性评分$V(d_k) \in [0,1]$动态评估数据潜在风险，初始值为$V(d_k) = 0$。当数据采用较低安全等级策略时，其脆弱性增加，具体更新规则为：
+\begin{equation}
+    V_{\text{new}}(d_k) =
+    \begin{cases}
+        V_{\text{prev}}(d_k), & \alpha_{\text{now}} \geq \alpha_{\text{hist}} \\
+        \min(V_{\text{prev}}(d_k) + \Delta V, 1), & \alpha_{\text{now}} < \alpha_{\text{hist}}
+    \end{cases}
+\end{equation}
+其中$\Delta V = \alpha_{\text{hist}} - \alpha_{\text{now}}$表示安全降级幅度。例如，当医疗数据$d$的安全等级从$\alpha_d=0.95$降级至$\alpha_d=0.8$时，其脆弱性增加$0.15$（从$V_d=0.05$更新为$V_d=0.20$）。最后，本文认为，若数据曾使用过较低的安全策略，再次使用同等级或更高的安全策略，数据的脆弱性不会增加。这是因为，数据的安全主要由隐私加密算法保护，若算法未被攻破，数据无论被使用多少次均不会泄露。因此，在混合云高负载时，调度算法可优先将已有潜在风险的数据卸载到公有云处理，从而避免其余数据安全性降低，提升系统整体安全性。
+
+根据以上原则，本文提出安全性优化目标$\text{Security}$，定义为：
+\begin{equation}
+    \text{Security} = \sum_{k=1}^K \text{size}(d_k) \cdot \left( 1 - V(d_k) \right)
+    \label{eq:security}
+\end{equation}
+该目标可以指导调度算法在混合云系统安全性与任务处理效率之间达到平衡。
+
+\section{优化问题建立}\label{sec:opt-prob}
+
+本节建立三目标优化模型，同时优化完工时间、系统安全性和计算成本三个目标。首先，定义了决策变量空间，包括私有云分配矩阵\(\mathbf{X}\)、公有云分配矩阵\(\mathbf{Y}\)以及安全策略矩阵\(\mathbf{Z}\)。其次，构建了完整的约束条件，包括安全等级合规约束、数据本地化存储约束、决策变量完整性约束以及跨云协作约束等，确保调度方案的可行性与合规性。最后，结合完工时间最小化、计算成本最小化与安全性最大化目标，定义多目标优化问题。该模型通过动态决策安全策略选择与资源分配，实现了性能、安全与成本的平衡，为后续调度算法的设计与分析奠定了基础。
+
+\subsection{决策变量}
+混合云任务调度模型决策空间由三类变量构成。私有云分配矩阵\(\mathbf{X} \in \{0,1\}^{M \times S}\)定义了任务与虚拟机\(s_i\)的映射关系，其中\(\mathbf{X}[m][i] = 1\)表示任务\(e_m\)被分配至私有云虚拟机\(s_i\)执行。公有云分配矩阵\(\mathbf{Y} \in \{0,1\}^{M \times (J \times N)}\)描述了跨云协作任务的处理子任务调度方案，其中复合下标\((j,n)\)对应第\(j\)类公有云虚拟机的第\(n\)个虚拟机\(v_{(j,n)}\)，使用公式\eqref{eq:pubid-enumeration}计算。\(\mathbf{Y}[m][(j,n)] = 1\)表示协作任务的处理子任务\(e_m^{(P)}\)分配至虚拟机\(v_{(j,n)}\)。安全策略矩阵\(\mathbf{Z} \in \{0,1\}^{M \times Q}\)记录了每个任务的安全策略选择，\(\mathbf{Z}[m][q] = 1\)表示任务\(e_m\)采用编号为\(q\)的安全策略，这一决策直接影响任务的加解密计算开销与系统整体安全等级。这三类决策变量共同构成了混合云调度问题的优化空间。
+
+\subsection{约束条件}
+
+为确保调度方案的可行性与合规性，本文定义了以下约束条件。首先，安全等级合规约束 (C1)要求每个任务\(e_m\)所选安全策略的安全等级不低于其关联数据的最低安全要求，具体定义见公式\eqref{eq:min-security}。
+
+其次，数据本地化存储约束 (C2)确保任务仅能在已存储其关联隐私数据的私有云虚拟机上执行，其形式化定义为：
+\begin{equation}
+    \text{C2:} \sum_{i=1}^S \mathbf{L}[k][i] \cdot \mathbf{X}[m][i] = 1 \quad \text{当} \ \text{data}(e_m)=d_k
+    \label{eq:cst-data-location}
+\end{equation}
+该约束保证任务能够访问所需隐私数据，且每个任务都能分配到一台私有虚拟机。
+
+决策变量完整性约束 (C3-C5)规范了决策变量基本属性：C3要求所有决策变量为二元变量；C4强制每个任务被分配至唯一私有云虚拟机；C5要求每个任务必须且仅能选择一个安全策略。其形式化定义如下：
+\begin{align}
+    \text{C3: } & \mathbf{X}[m][i] \in \{0,1\}, \ \mathbf{Y}[m][(j,n)] \in \{0,1\}, \ \mathbf{Z}[m][q] \in \{0,1\} \\
+    \text{C4: } & \sum_{i=1}^S \mathbf{X}[m][i] = 1 \quad \forall m \in \mathcal{M} \\
+    \text{C5: } & \sum_{q=0}^Q \mathbf{Z}[m][q] = 1 \quad \forall m \in \mathcal{M}
+\end{align}
+
+公有云决策变量约束 (C6)规定，当任务选择非私有云安全策略（\(\mathbf{Z}[m][0] = 0\)）时，必须分配一个公有云虚拟机处理协作子任务，其形式化为：
+\begin{equation}
+    \text{C6: }
+    \sum_{j=1}^J \sum_{n=1}^{N_j} \mathbf{Y}[m][(j,n)] = \sum_{q=1}^Q \mathbf{Z}[m][q] \quad \forall m \in \mathcal{M}
+\end{equation}
+
+公有云运行时间约束(C7)用于成本计算，其定义了公有云虚拟机$v_{(j,n)}$的总运行时间\(T_{(j, n)}\)（见公式\eqref{eq:vm-time}），并根据虚拟机的实际运行时长计算混合云成本。
+
+上述约束条件共同构建了混合云任务调度问题的完整约束体系。
+
+\subsection{优化问题}
+基于上述定义，混合云任务调度问题可形式化为三目标优化模型：
+\begin{equation}
+    \begin{aligned}
+        \min_{\mathbf{X},\mathbf{Y},\mathbf{Z}} \quad & \text{Makespan} = \max_{m \in \mathcal{M}} \text{FT}(e_m) \\
+        \min_{\mathbf{Y},\mathbf{Z}} \quad & \text{Cost} = \sum_{j=1}^J \sum_{n=1}^{N_j} R_j \cdot T_{(j,n)} \\
+        \max_{\mathbf{Z}} \quad & \text{Security} = \sum_{k=1}^K \text{size}(d_k)(1 - V(d_k)) \\
+        \text{s.t.} \quad & \text{C1-C7}
+    \end{aligned}
+\end{equation}
+其中，\(\text{Makespan}\)表示系统完工时间，\(\text{Cost}\)为混合云成本，\(\text{Security}\)为系统安全性指标。其中\(R_j\)表示第\(j\)类公有云虚拟机的单位时间计费价格。
+
+该问题属于多目标的大规模整数优化问题，其可行解空间随任务规模呈指数级增长，精确求解困难。因此，本研究后续章节将设计启发式算法，通过近似求解方法实现性能、安全与成本的权衡优化。
+% 通过规约分析可证明，该问题可简化为多维背包问题，属于NP完全问题。
+
+\section{本章小结}
+
+本章提出了混合云中动态细粒度的隐私任务调度模型，以解决混合云环境下隐私任务调度面临的安全与效率难以平衡的问题，并满足不同数据所有者的细粒度隐私需求，还提高了跨云协作效率。首先，建立了混合云资源模型，明确了私有云与公有云的资源特性及其协作机制，并确定了混合云的成本目标。其次，提出了一种公私云协作的动态任务模型，其支持任务在独立模式与跨云协作模式间动态切换，并精确描述了任务的计算与网络资源占用情况，为高效优化混合云处理效率提供依据。随后，在隐私安全层面，设计了细粒度的隐私标签机制，构建了隐私加密算法组与安全性量化评估模型，满足不同数据所有者的差异化隐私需求。并根据数据大小与隐私加密算法的安全系数，提出了混合云安全性的量化指标。最后，建立了以完工时间、安全性和成本为目标的多目标优化问题，明确了决策变量与约束条件，为混合云环境下隐私任务的调度平衡安全性与效率的矛盾奠定了坚实基础。
+
